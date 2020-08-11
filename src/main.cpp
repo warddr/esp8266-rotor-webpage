@@ -92,6 +92,8 @@ void loop(){
               Serial.println("right");
             } else if (header.indexOf("GET /turn/stop") >= 0) {
               Serial.println("stop");
+            } else if (header.indexOf("GET /toggel") >= 0) {
+              Serial.println("!t");
             } else if (header.indexOf("GET /turn?") >= 0) {
               int elIndex = header.indexOf("el=")+3;
               Serial.println(header.substring(elIndex,elIndex+4));
@@ -103,6 +105,7 @@ void loop(){
 
               client.println("<p>Az: " + SerialSendRead("?o", 150) + "</p>");
               client.println("<p>El: " + SerialSendRead("?p", 150) + "</p>");
+              client.println("<p>Toggel: " + SerialSendRead("?t", 150) + "</p>");
               //wifi
               client.println("<p>rssi: " + String(WiFi.RSSI()) + "dBm</p>");
             }
@@ -117,7 +120,7 @@ void loop(){
             client.println("<a href=\"/turn/stop\"><button class=\"button\">stop</button></a>");
             client.println("<a href=\"/turn/right\"><button class=\"button\">right</button></a>");
             client.println("</p>");
-
+            client.println("<p><a href=\"/toggel\"><button class=\"button\">!t</button></a></p>");
             client.println("<p>input in 10 of a degree, always 4 digits (prepend with 0 if needed)<br /><table><tr><td><form action='/turn' method='get'>");
             client.println("el:<input type='text' name='el' value=''><br />");
             client.println("az:<input type='text' name='az' value=''><br />");
