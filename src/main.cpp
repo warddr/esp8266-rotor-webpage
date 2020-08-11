@@ -86,12 +86,8 @@ void loop(){
 
             
             // turns the GPIOs on and off
-            if (header.indexOf("GET /turn/left") >= 0) {
-              Serial.println("left");
-            } else if (header.indexOf("GET /turn/right") >= 0) {
-              Serial.println("right");
-            } else if (header.indexOf("GET /turn/stop") >= 0) {
-              Serial.println("stop");
+            if (header.indexOf("GET /track/moon") >= 0) {
+              Serial.println("!d0000");
             } else if (header.indexOf("GET /toggel") >= 0) {
               Serial.println("!t");
             } else if (header.indexOf("GET /turn?") >= 0) {
@@ -116,11 +112,7 @@ void loop(){
             // Web Page Heading
             client.println("<p><a href=\"/status\"><button class=\"button\">status<br/>refresh</button></a></p>");
             client.println("<h1>Rotor controller</h1>");
-            client.println("<!--<p>");
-            client.println("<a href=\"/turn/left\"><button class=\"button\">left</button></a>");
-            client.println("<a href=\"/turn/stop\"><button class=\"button\">stop</button></a>");
-            client.println("<a href=\"/turn/right\"><button class=\"button\">right</button></a>");
-            client.println("</p>-->");
+            client.println("<p><a href=\"/track/moon\"><button class=\"button\">moon</button></a></p>");
             client.println("<p><a href=\"/toggel\"><button class=\"button\">!t</button></a></p>");
             client.println("<p>input in 10 of a degree, always 4 digits (prepend with 0 if needed)<br /><table><tr><td><form action='/turn' method='get'>");
             client.println("el:<input type='text' name='el' value=''><br />");
