@@ -24,7 +24,7 @@ unsigned long currentTime = millis();
 // Previous time
 unsigned long previousTime = 0; 
 // Define timeout time in milliseconds (example: 2000ms = 2s)
-const long timeoutTime = 2000;
+const long timeoutTime = 5000;
 
 void setup() {
   Serial.begin(115200);
@@ -35,6 +35,16 @@ void setup() {
     delay(500);
   }
   server.begin();
+}
+
+String SerialSendRead(String command, int milliseconds){
+              String buffer="";
+              while (Serial.available()>0) buffer+= Serial.readString();   
+              Serial.println(command);
+              delay(milliseconds);
+              buffer="";
+              while (Serial.available()>0) buffer+= Serial.readString();
+              return buffer;
 }
 
 void loop(){
@@ -59,6 +69,21 @@ void loop(){
             client.println("Content-type:text/html");
             client.println("Connection: close");
             client.println();
+
+
+                        // Display the HTML web page
+            client.println("<!DOCTYPE html><html>");
+            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            client.println("<link rel=\"icon\" href=\"data:,\">");
+            // CSS to style the on/off buttons 
+            // Feel free to change the background-color and font-size attributes to fit your preferences
+            client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto;}");
+            client.println(".button { background-color: #195B6A; border: none; color: white; padding: 15px 35px;");
+            client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
+            client.println(".button2 {background-color: #77878A;}</style></head>");
+
+            client.println("<body>");
+
             
             // turns the GPIOs on and off
             if (header.indexOf("GET /turn/left") >= 0) {
@@ -72,21 +97,21 @@ void loop(){
               Serial.println(header.substring(elIndex,elIndex+4));
               int azIndex = header.indexOf("az=")+3;
               Serial.println(header.substring(azIndex,azIndex+4));
+            } else if (header.indexOf("GET /status") >= 0) {
+              client.println("<h1>status</h1>");
+              //AZ
+
+              client.println("<p>Az: " + SerialSendRead("?o", 150) + "</p>");
+              client.println("<p>El: " + SerialSendRead("?p", 150) + "</p>");
+              //wifi
+              client.println("<p>rssi: " + String(WiFi.RSSI()) + "dBm</p>");
             }
             
-            // Display the HTML web page
-            client.println("<!DOCTYPE html><html>");
-            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-            client.println("<link rel=\"icon\" href=\"data:,\">");
-            // CSS to style the on/off buttons 
-            // Feel free to change the background-color and font-size attributes to fit your preferences
-            client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto;}");
-            client.println(".button { background-color: #195B6A; border: none; color: white; padding: 15px 35px;");
-            client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-            client.println(".button2 {background-color: #77878A;}</style></head>");
+
             
             // Web Page Heading
-            client.println("<body><h1>Rotor controller</h1>");
+            client.println("<p><a href=\"/status\"><button class=\"button\">status<br/>refresh</button></a></p>");
+            client.println("<h1>Rotor controller</h1>");
             client.println("<p>");
             client.println("<a href=\"/turn/left\"><button class=\"button\">left</button></a>");
             client.println("<a href=\"/turn/stop\"><button class=\"button\">stop</button></a>");
