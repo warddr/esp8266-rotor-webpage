@@ -100,9 +100,11 @@ void loop(){
               client.println("<h1>status</h1>");
               //AZ
 
-              client.println("<p>Az: " + SerialSendRead("?o", 500) + "</p>");
-              client.println("<p>El: " + SerialSendRead("?p", 500) + "</p>");
-              client.println("<p>Toggel: " + SerialSendRead("?t", 500) + "</p>");
+              client.println("<p>Az: " + SerialSendRead("?o", 300) + "</p>");
+              client.println("<p>El: " + SerialSendRead("?p", 300) + "</p>");
+              client.println("<p>Toggel: " + SerialSendRead("?t", 300) + "</p>");
+              client.println("<p>Target AZ: " + SerialSendRead("?q", 300) + "</p>");
+              client.println("<p>Target EL: " + SerialSendRead("?r", 300) + "</p>");
               //wifi
               client.println("<p>rssi: " + String(WiFi.RSSI()) + "dBm</p>");
             }
