@@ -61,11 +61,11 @@ void setup() {
 
   timeClient.begin();
   timeClient.update();
+  Serial.println("!u" + prependZero(timeClient.getSeconds(),4));
+  delay(50);
   Serial.println("!w" + prependZero(timeClient.getHours(),4));
   delay(50);
   Serial.println("!v" + prependZero(timeClient.getMinutes(),4));
-  delay(50);
-  Serial.println("!u" + prependZero(timeClient.getSeconds(),4));
   delay(50);
   unsigned long epochTime = timeClient.getEpochTime();
   struct tm *ptm = gmtime ((time_t *)&epochTime); 
