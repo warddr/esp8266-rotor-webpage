@@ -62,11 +62,11 @@ void setup() {
   timeClient.begin();
   timeClient.update();
   Serial.println("!u" + prependZero(timeClient.getSeconds(),4));
-  delay(50);
+  delay(100);
   Serial.println("!w" + prependZero(timeClient.getHours(),4));
-  delay(50);
+  delay(100);
   Serial.println("!v" + prependZero(timeClient.getMinutes(),4));
-  delay(50);
+  delay(100);
   unsigned long epochTime = timeClient.getEpochTime();
   struct tm *ptm = gmtime ((time_t *)&epochTime); 
   int monthDay = ptm->tm_mday;
@@ -74,11 +74,11 @@ void setup() {
   int currentYear = ptm->tm_year-100;
 
   Serial.println("!x" + prependZero(monthDay,4));
-  delay(50);
+  delay(100);
   Serial.println("!y" + prependZero(currentMonth,4));
-  delay(50);
+  delay(100);
   Serial.println("!z" + prependZero(currentYear,4));
-  delay(50);
+  delay(100);
 
 
 }
