@@ -1,5 +1,10 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 
 // Replace with your network credentials
 const char* ssid     = "WirelessBelgie-Internet";
@@ -26,17 +31,6 @@ unsigned long previousTime = 0;
 // Define timeout time in milliseconds (example: 2000ms = 2s)
 const long timeoutTime = 5000;
 
-void setup() {
-  Serial.begin(115200);
-
-  // Connect to Wi-Fi network with SSID and password
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  }
-  server.begin();
-}
-
 String SerialSendRead(String command, int milliseconds){
               String buffer="";
               while (Serial.available()>0) buffer+= Serial.readString();   
@@ -46,6 +40,51 @@ String SerialSendRead(String command, int milliseconds){
               while (Serial.available()>0) buffer+= Serial.readString();
               return buffer;
 }
+
+String prependZero(int number, unsigned int outLength){
+  String output = String(number);
+  while (output.length() < outLength){
+    output = "0"+output;
+  }
+  return output;
+}
+
+void setup() {
+  Serial.begin(115200);
+
+  // Connect to Wi-Fi network with SSID and password
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+  }
+  server.begin();
+
+  timeClient.begin();
+  timeClient.update();
+  Serial.println("!w" + prependZero(timeClient.getHours(),4));
+  delay(50);
+  Serial.println("!v" + prependZero(timeClient.getMinutes(),4));
+  delay(50);
+  Serial.println("!u" + prependZero(timeClient.getSeconds(),4));
+  delay(50);
+  unsigned long epochTime = timeClient.getEpochTime();
+  struct tm *ptm = gmtime ((time_t *)&epochTime); 
+  int monthDay = ptm->tm_mday;
+  int currentMonth = ptm->tm_mon+1;
+  int currentYear = ptm->tm_year-100;
+
+  Serial.println("!x" + prependZero(monthDay,4));
+  delay(50);
+  Serial.println("!y" + prependZero(currentMonth,4));
+  delay(50);
+  Serial.println("!z" + prependZero(currentYear,4));
+  delay(50);
+
+
+}
+
+
+
 
 void loop(){
   WiFiClient client = server.available();   // Listen for incoming clients
